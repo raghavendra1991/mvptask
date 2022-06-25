@@ -3,37 +3,18 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+        http_proxy = 'http://127.0.0.1:3128/'
+        https_proxy = 'http://127.0.0.1:3128/'
+        ftp_proxy = 'http://127.0.0.1:3128/'
+        socks_proxy = 'socks://127.0.0.1:3128/'
     }
 
     stages {
         
         stage ('Build Docker Image') {
             steps {
-                sh 'docker-compose build '       
-            }
-        }
-        stage ('Rename Docker Image') {
-            steps {
-                sh 'docker tag docker-compose-feature2_webapp raghaduvva/dcapp'
-                sh 'docker tag docker-compose-feature2_db raghaduvva/dcdb'       
-            }
-        }
-        stage ('Login DockerHub') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR  --password-stdin'       
-            }
-        }
-        stage ('Deploy Docker images') {
-            steps {
-                sh 'docker push raghaduvva/dcapp'
-                sh 'docker push raghaduvva/dcdb'
-
-            }
-        }
-        stage ('Remove Unused Docker Images') {
-            steps {
-                sh 'docker rmi -f $(docker images -a -q)'
+                echo 'Build Multiple Docker Image Using Docker-Compose'
+                sh 'docker-compose build'       
             }
         }
     }
